@@ -18,7 +18,7 @@
             <th>@Html.DisplayNameFor(model => model.Brand)</th>
             <th>@Html.DisplayNameFor(model => model.Price)</th>
             <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>Image</th> <!-- đổi nhãn cột -->
+            <th>Image</th> 
             <th>@Html.DisplayNameFor(model => model.Stock)</th>
             <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
             <th></th>
@@ -30,12 +30,12 @@
             <tr>
                 <td>@Html.DisplayFor(_ => item.Name)</td>
                 <td>@Html.DisplayFor(_ => item.Brand)</td>
-                <td>@item.Price.ToString("N0")</td> <!-- hoặc dùng DisplayFor nếu đã annotate -->
+                <td>@item.Price.ToString("N0")</td> 
                 <td class="text-truncate" style="max-width:320px;">@Html.DisplayFor(_ => item.Description)</td>
                 <td>
                     @{
                         var img = string.IsNullOrWhiteSpace(item.ImageUrl)
-                        ? "/images/placeholder.png"   // đặt ảnh mặc định nếu muốn
+                        ? "/images/placeholder.png"   
                         : item.ImageUrl;
                     }
                     <img src="@img"
