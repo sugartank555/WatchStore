@@ -1,0 +1,45 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow p-4" style="max-width: 400px; width:100%;">
+        <h2 class="text-center mb-4">Đăng nhập</h2>
+        <form id="account" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+
+            <hr />
+            <div class="text-center">
+                <p><a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a></p>
+                <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký làm người dùng mới</a></p>
+               
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

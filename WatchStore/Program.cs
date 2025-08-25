@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WatchStore.Data;
 using WatchStore.Services;     
@@ -63,8 +63,8 @@ app.MapControllerRoute(
          );
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "Products",
+    pattern: "{controller=Products}/{action=Index}/{id?}");
 
 
 app.MapRazorPages();
