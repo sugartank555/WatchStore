@@ -1,0 +1,55 @@
+﻿@model IEnumerable<WatchStore.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Brand)</th>
+            <th>@Html.DisplayNameFor(model => model.Price)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>Image</th> <!-- đổi nhãn cột -->
+            <th>@Html.DisplayNameFor(model => model.Stock)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(_ => item.Name)</td>
+                <td>@Html.DisplayFor(_ => item.Brand)</td>
+                <td>@item.Price.ToString("N0")</td> <!-- hoặc dùng DisplayFor nếu đã annotate -->
+                <td class="text-truncate" style="max-width:320px;">@Html.DisplayFor(_ => item.Description)</td>
+                <td>
+                    @{
+                        var img = string.IsNullOrWhiteSpace(item.ImageUrl)
+                        ? "/images/placeholder.png"   // đặt ảnh mặc định nếu muốn
+                        : item.ImageUrl;
+                    }
+                    <img src="@img"
+                         alt="@item.Name"
+                         style="width:100px; height:auto; object-fit:cover; border-radius:8px;" />
+                </td>
+                <td>@Html.DisplayFor(_ => item.Stock)</td>
+                <td>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
