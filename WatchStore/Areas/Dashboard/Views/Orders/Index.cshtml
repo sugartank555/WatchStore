@@ -2,6 +2,7 @@
 @model IEnumerable<WatchStore.Models.Order>
 @{
     ViewData["Title"] = "Tất cả đơn";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
 }
 <h2>Tất cả đơn</h2>
 <p><a asp-area="Dashboard" asp-controller="Orders" asp-action="Pending" class="btn btn-warning">Đơn chờ xác nhận</a></p>

@@ -8,6 +8,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">Giỏ hàng trống.</div>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Thêm sản phẩm</a>
 }
 else
 {
@@ -28,7 +29,7 @@ else
                             <button class="btn btn-sm btn-secondary">Cập nhật</button>
                         </form>
                     </td>
-                    <td>@( (it.UnitPrice * it.Quantity).ToString("#,0") ) ₫</td>
+                    <td>@((it.UnitPrice * it.Quantity).ToString("#,0")) ₫</td>
                     <td>
                         <form asp-action="Remove" method="post">
                             <input type="hidden" name="cartItemId" value="@it.Id" />
@@ -51,5 +52,8 @@ else
         </tfoot>
     </table>
 
-    <a class="btn btn-success" asp-controller="Checkout" asp-action="Index">Bắt đầu thanh toán</a>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Thêm sản phẩm khác</a>
+        <a class="btn btn-success" asp-controller="Checkout" asp-action="Index">Thanh toán</a>
+    </div>
 }

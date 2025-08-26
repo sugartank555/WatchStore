@@ -1,28 +1,65 @@
-﻿<header class="hero-section d-flex align-items-center">
-    <div class="container text-center text-white">
-        <h1 class="display-3 fw-bold">Watch Elegance</h1>
-        <p class="lead fw-light mb-4">Khám phá bộ sưu tập đồng hồ sang trọng</p>
-        <a href="~/Products/Index" class="btn btn-lg btn-outline-light rounded-pill px-5">
-            Mua ngay
-        </a>
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới thiệu Đồng Hồ</title>
+    <style>
+        .banner {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+            .banner img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px 30px;
+            border-radius: 10px;
+            max-width: 500px;
+        }
+
+            .banner-text h1 {
+                font-size: 36px;
+                margin-bottom: 10px;
+            }
+
+            .banner-text p {
+                font-size: 18px;
+            }
+
+
+        {
+            font-size: 24px;
+        }
+
+        .banner-text p {
+            font-size: 16px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <img src="~/images/26.png.jpg" /> <alt="Banner Đồng Hồ">
+        <div class="banner-text">
+            <h1>Thế Giới Đồng Hồ Cao Cấp Nhất Thế Giới</h1>
+            <p>Chúng tôi mang đến cho bạn những mẫu đồng hồ chính hãng, đẳng cấp, phù hợp với mọi phong cách sống hiện đại.</p>
+        </div>
     </div>
-</header>
 
-<style>
-    .hero-section {
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('~/images/26.png.jpg') center/cover no-repeat;
-        height: 90vh; /* toàn màn hình */
-        position: relative;
-    }
-
-        .hero-section h1 {
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .hero-section p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-</style>
+</body>
+</html>

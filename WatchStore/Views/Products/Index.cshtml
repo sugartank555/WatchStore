@@ -6,6 +6,22 @@
 }
 <partial name="_LayoutHeader" />
 
+<!-- CSS trực tiếp -->
+<style>
+    .card-img-top {
+        transition: transform 0.5s ease;
+        object-fit: cover;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.5);
+    }
+
+    .card {
+        overflow: hidden;
+    }
+</style>
+
 <section class="py-5">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -32,17 +48,25 @@
                                     <div class="bi-star-fill"></div>
                                     <div class="bi-star-fill"></div>
                                 </div>
-                                <span>@item.Price.ToString("C")</span>
+                                <span>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.Price)</span>
                             </div>
                         </div>
                         <div align="center">
-                        <!-- Product actions-->
-                        <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                            <input type="hidden" name="productId" value="@item.Id" />
-                            <button class="btn btn-primary">Thêm giỏ</button>
-                        </form>
+                            <!-- Product actions-->
+                            <form asp-controller="Products" asp-action="Details" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button class="btn btn-primary">Xem chi tiết</button>
+                            </form>
                         </div>
-
+                        <div align="center">
+                            <!-- Product actions-->
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.Id" />
+                                <button class="btn btn-primary">Thêm vào giỏ hàng</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             }

@@ -1,6 +1,7 @@
 ﻿@model WatchStore.Models.Order
 @{
     ViewData["Title"] = "Chi tiết đơn #" + Model.Id;
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
 }
 <h2>Đơn #@Model.Id</h2>
 <p>Ngày: @Model.OrderDate.ToLocalTime()</p>

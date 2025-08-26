@@ -66,6 +66,10 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "Dashboard",
+    pattern: "{area:exists}/{controller=Orders}/{action=Index}/{id?}");
+
 // Trang cửa hàng mặc định
 app.MapControllerRoute(
     name: "default",
