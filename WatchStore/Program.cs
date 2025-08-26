@@ -1,17 +1,18 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WatchStore.Data;
-using WatchStore.Services;     
+using WatchStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ===== DB =====
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-
+// ===== Identity (IdentityUser) + Roles =====
 builder.Services
     .AddDefaultIdentity<IdentityUser>(options =>
     {
@@ -21,9 +22,10 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
+// ===== MVC =====
 builder.Services.AddControllersWithViews();
 
+// ===== Session (Cart) =====
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -33,13 +35,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
+// ===== DI =====
 builder.Services.AddScoped<ICartService, SessionCartService>();
 builder.Services.AddScoped<IEmailSenderSimple, SmtpEmailSender>();
 builder.Services.AddScoped<IAdminNotifier, AdminEmailNotifier>();
 
 var app = builder.Build();
 
+// ===== Pipeline =====
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -59,21 +62,26 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// ===== ROUTES =====
+// Area Admin (đường dẫn: /Admin/Dashboard/Index ...)
 app.MapControllerRoute(
-           name: "Dashborad",
-           pattern: "{area:exists}/{controller=Products}/{action=Index}/{id?}"
-         );
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
 
+// Trang cửa hàng mặc định
 app.MapControllerRoute(
-    name: "Products",
-    pattern: "{controller=Products}/{action=Index}/{id?}");
+    name: "default",
+    pattern: "{controller=Products}/{action=Index}/{id?}"
+);
 
-
+// Razor Pages (Identity)
 app.MapRazorPages();
 
+// ===== Seed (roles, admin, products) =====
 using (var scope = app.Services.CreateScope())
- {
-     await SeedData.InitializeAsync(scope.ServiceProvider);
- }
+{
+    await SeedData.InitializeAsync(scope.ServiceProvider);
+}
 
 app.Run();

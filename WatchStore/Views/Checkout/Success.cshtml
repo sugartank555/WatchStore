@@ -1,0 +1,28 @@
+﻿@model WatchStore.Models.Order
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+<div class="alert alert-success">
+    <h4>Đặt hàng thành công!</h4>
+    <p>Mã đơn: <b>#@Model.Id</b> — Ngày: @Model.OrderDate.ToLocalTime()</p>
+    <p>Giao đến: <b>@Model.ReceiverName</b>, @Model.ShippingAddress — @Model.Phone</p>
+</div>
+
+<h5>Sản phẩm</h5>
+<table class="table">
+    <thead><tr><th>Tên</th><th>SL</th><th>Giá</th><th>Tạm tính</th></tr></thead>
+    <tbody>
+        @foreach (var i in Model.Items)
+        {
+            <tr>
+                <td>@i.Product.Name</td>
+                <td>@i.Quantity</td>
+                <td>@i.UnitPrice.ToString("#,0") ₫</td>
+                <td>@( (i.UnitPrice * i.Quantity).ToString("#,0") ) ₫</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>Tổng: <b>@Model.TotalAmount.ToString("#,0") ₫</b></p>
+<a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">Tiếp tục mua sắm</a>

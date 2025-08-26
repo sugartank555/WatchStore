@@ -1,0 +1,55 @@
+﻿@model List<WatchStore.Models.CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    decimal total = (decimal)(ViewBag.Total ?? 0m);
+}
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Giỏ hàng trống.</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>Sản phẩm</th><th>Giá</th><th>SL</th><th>Tạm tính</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var it in Model)
+            {
+                <tr>
+                    <td>@it.Product.Name</td>
+                    <td>@it.UnitPrice.ToString("#,0") ₫</td>
+                    <td style="max-width:160px">
+                        <form asp-action="Update" method="post" class="d-flex gap-2">
+                            <input type="hidden" name="cartItemId" value="@it.Id" />
+                            <input class="form-control" type="number" name="quantity" min="0" value="@it.Quantity" />
+                            <button class="btn btn-sm btn-secondary">Cập nhật</button>
+                        </form>
+                    </td>
+                    <td>@( (it.UnitPrice * it.Quantity).ToString("#,0") ) ₫</td>
+                    <td>
+                        <form asp-action="Remove" method="post">
+                            <input type="hidden" name="cartItemId" value="@it.Id" />
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Tổng:</th>
+                <th>@total.ToString("#,0") ₫</th>
+                <th>
+                    <form asp-action="Clear" method="post">
+                        <button class="btn btn-sm btn-outline-warning">Xóa giỏ</button>
+                    </form>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a class="btn btn-success" asp-controller="Checkout" asp-action="Index">Bắt đầu thanh toán</a>
+}

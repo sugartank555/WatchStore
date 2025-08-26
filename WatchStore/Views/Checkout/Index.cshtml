@@ -1,0 +1,30 @@
+﻿@model WatchStore.Controllers.CheckoutVm
+@{
+    ViewData["Title"] = "Thanh toán";
+    decimal total = (decimal)(ViewBag.Total ?? 0m);
+}
+<h2>Thanh toán</h2>
+<p>Tổng tiền: <b>@total.ToString("#,0") ₫</b></p>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Người nhận</label>
+        <input asp-for="ReceiverName" class="form-control" />
+        <span asp-validation-for="ReceiverName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Địa chỉ giao hàng</label>
+        <input asp-for="ShippingAddress" class="form-control" />
+        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">SĐT</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary">Đặt hàng</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
