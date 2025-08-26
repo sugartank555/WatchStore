@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq; // cần cho Where/OrderBy
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WatchStore.Data;
 
-namespace WatchStore.Areas.Admin.Controllers
+namespace WatchStore.Areas.Dashboard.Controllers
 {
-    [Area("Admin")]
+    [Area("Dashboard")]
     [Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
@@ -17,7 +18,7 @@ namespace WatchStore.Areas.Admin.Controllers
             var orders = await _db.Orders
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
-            return View(orders);
+            return View(orders); // -> Areas/Dashboard/Views/Orders/Index.cshtml
         }
 
         public async Task<IActionResult> Pending()
@@ -26,7 +27,7 @@ namespace WatchStore.Areas.Admin.Controllers
                 .Where(o => o.Status == "Pending")
                 .OrderBy(o => o.OrderDate)
                 .ToListAsync();
-            return View(orders);
+            return View(orders); // -> Areas/Dashboard/Views/Orders/Pending.cshtml
         }
 
         public async Task<IActionResult> Details(int id)
@@ -36,11 +37,10 @@ namespace WatchStore.Areas.Admin.Controllers
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound();
-            return View(order);
+            return View(order); // -> Areas/Dashboard/Views/Orders/Details.cshtml
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Confirm(int id, string? note)
         {
             var order = await _db.Orders.FindAsync(id);
@@ -51,8 +51,7 @@ namespace WatchStore.Areas.Admin.Controllers
             return RedirectToAction(nameof(Details), new { id });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Reject(int id, string? note)
         {
             var order = await _db.Orders.FindAsync(id);

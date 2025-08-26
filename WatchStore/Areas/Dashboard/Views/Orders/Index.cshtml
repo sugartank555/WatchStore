@@ -1,14 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
 @model IEnumerable<WatchStore.Models.Order>
 @{
     ViewData["Title"] = "Tất cả đơn";
 }
 <h2>Tất cả đơn</h2>
-<p><a asp-area="Admin" asp-controller="Orders" asp-action="Pending" class="btn btn-warning">Đơn chờ xác nhận</a></p>
+<p><a asp-area="Dashboard" asp-controller="Orders" asp-action="Pending" class="btn btn-warning">Đơn chờ xác nhận</a></p>
 <table class="table">
     <thead><tr><th>#</th><th>Ngày</th><th>Tổng</th><th>Trạng thái</th><th></th></tr></thead>
     <tbody>
@@ -19,7 +15,12 @@
                 <td>@o.OrderDate.ToLocalTime()</td>
                 <td>@o.TotalAmount.ToString("#,0") ₫</td>
                 <td>@o.Status</td>
-                <td><a class="btn btn-sm btn-outline-secondary" asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">Chi tiết</a></td>
+                <td>
+                    <a class="btn btn-sm btn-outline-secondary"
+                       href="@Url.Action("Details", "Orders", new { area = "Dashboard", id = o.Id })">
+                        Chi tiết
+                    </a>
+                </td>
             </tr>
         }
     </tbody>

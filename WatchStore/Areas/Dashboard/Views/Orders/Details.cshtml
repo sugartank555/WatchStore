@@ -25,13 +25,13 @@
 </table>
 <p>Tổng: <b>@Model.TotalAmount.ToString("#,0") ₫</b></p>
 
-<form method="post" asp-area="Admin" asp-controller="Orders" asp-action="Confirm" class="d-inline">
+<form method="post" asp-area="Dashboard" asp-controller="Orders" asp-action="Confirm" class="d-inline">
     <input type="hidden" name="id" value="@Model.Id" />
     <input type="text" name="note" class="form-control d-inline-block" style="width:260px" placeholder="Ghi chú xác nhận (tuỳ chọn)" />
     <button class="btn btn-success">Xác nhận</button>
 </form>
 
-<form method="post" asp-area="Admin" asp-controller="Orders" asp-action="Reject" class="d-inline ms-2">
+<form method="post" asp-area="Dashboard" asp-controller="Orders" asp-action="Reject" class="d-inline ms-2">
     <input type="hidden" name="id" value="@Model.Id" />
     <input type="text" name="note" class="form-control d-inline-block" style="width:260px" placeholder="Lý do từ chối (tuỳ chọn)" />
     <button class="btn btn-outline-danger">Từ chối</button>
