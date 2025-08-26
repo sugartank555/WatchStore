@@ -35,6 +35,8 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddScoped<ICartService, SessionCartService>();
+builder.Services.AddScoped<IEmailSenderSimple, SmtpEmailSender>();
+builder.Services.AddScoped<IAdminNotifier, AdminEmailNotifier>();
 
 var app = builder.Build();
 

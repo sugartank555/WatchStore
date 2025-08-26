@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace WatchStore.Models
 {
     public class Order
     {
         public int Id { get; set; }
-        public string UserId { get; set; } = default!;
-        public ApplicationUser User { get; set; } = default!;
+
+        [Required] public string UserId { get; set; } = default!;
+        public IdentityUser User { get; set; } = default!;
+
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         [Required, StringLength(160)]
@@ -19,9 +22,10 @@ namespace WatchStore.Models
         public string Phone { get; set; } = default!;
 
         public decimal TotalAmount { get; set; }
-        public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
-        public string Status { get; set; } = "New";
-    }
 
-    
+        [StringLength(40)] public string Status { get; set; } = "Pending";
+        [StringLength(400)] public string? AdminNote { get; set; }
+
+        public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+    }
 }

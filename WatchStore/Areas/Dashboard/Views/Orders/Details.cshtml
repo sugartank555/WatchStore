@@ -1,0 +1,38 @@
+﻿@model WatchStore.Models.Order
+@{
+    ViewData["Title"] = "Chi tiết đơn #" + Model.Id;
+}
+<h2>Đơn #@Model.Id</h2>
+<p>Ngày: @Model.OrderDate.ToLocalTime()</p>
+<p>Khách: <b>@Model.ReceiverName</b> — @Model.Phone</p>
+<p>Địa chỉ: @Model.ShippingAddress</p>
+<p>Trạng thái: <span class="badge bg-@(Model.Status == "Pending" ? "warning" : Model.Status == "Confirmed" ? "success" : "secondary")">@Model.Status</span></p>
+
+<h5>Sản phẩm</h5>
+<table class="table">
+    <thead><tr><th>Tên</th><th>SL</th><th>Giá</th><th>Tạm tính</th></tr></thead>
+    <tbody>
+        @foreach (var i in Model.Items)
+        {
+            <tr>
+                <td>@i.Product.Name</td>
+                <td>@i.Quantity</td>
+                <td>@i.UnitPrice.ToString("#,0") ₫</td>
+                <td>@( (i.UnitPrice * i.Quantity).ToString("#,0") ) ₫</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>Tổng: <b>@Model.TotalAmount.ToString("#,0") ₫</b></p>
+
+<form method="post" asp-area="Admin" asp-controller="Orders" asp-action="Confirm" class="d-inline">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="text" name="note" class="form-control d-inline-block" style="width:260px" placeholder="Ghi chú xác nhận (tuỳ chọn)" />
+    <button class="btn btn-success">Xác nhận</button>
+</form>
+
+<form method="post" asp-area="Admin" asp-controller="Orders" asp-action="Reject" class="d-inline ms-2">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="text" name="note" class="form-control d-inline-block" style="width:260px" placeholder="Lý do từ chối (tuỳ chọn)" />
+    <button class="btn btn-outline-danger">Từ chối</button>
+</form>

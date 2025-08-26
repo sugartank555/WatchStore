@@ -14,5 +14,22 @@ namespace WatchStore.Data
         public DbSet<CartItem> CartItems => Set<CartItem>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<OrderItem>()
+                   .HasOne(i => i.Order)
+                   .WithMany(o => o.Items)
+                   .HasForeignKey(i => i.OrderId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Order>()
+                   .HasOne(o => o.User)
+                   .WithMany()
+                   .HasForeignKey(o => o.UserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

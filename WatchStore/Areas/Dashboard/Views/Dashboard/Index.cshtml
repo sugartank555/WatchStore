@@ -1,0 +1,42 @@
+﻿@model IEnumerable<WatchStore.Models.Order>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+ 
+    decimal revenue = (decimal)(ViewBag.Revenue ?? 0m);
+
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+}
+
+
+<h2>Dashboard</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col"><div class="card p-3">Tổng đơn: <b>@ViewBag.TotalOrders</b></div></div>
+    <div class="col"><div class="card p-3">Chờ xác nhận: <b>@ViewBag.Pending</b></div></div>
+    <div class="col"><div class="card p-3">Đã xác nhận: <b>@ViewBag.Confirmed</b></div></div>
+    <div class="col"><div class="card p-3">Doanh thu: <b>@revenue.ToString("#,0") ₫</b></div></div>
+</div>
+
+<h5>Đơn gần đây</h5>
+<table class="table">
+    <thead>
+        <tr><th>#</th><th>Ngày</th><th>Tổng</th><th>Trạng thái</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                <td>@o.OrderDate.ToLocalTime()</td>
+                <td>@o.TotalAmount.ToString("#,0") ₫</td>
+                <td>@o.Status</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary"
+                       asp-area="Admin" asp-controller="Orders" asp-action="Details"
+                       asp-route-id="@o.Id">Chi tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

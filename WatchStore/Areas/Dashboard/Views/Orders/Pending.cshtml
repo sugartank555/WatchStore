@@ -1,0 +1,19 @@
+﻿@model IEnumerable<WatchStore.Models.Order>
+@{
+    ViewData["Title"] = "Đơn chờ xác nhận";
+}
+<h2>Đơn chờ xác nhận</h2>
+<table class="table">
+    <thead><tr><th>#</th><th>Ngày</th><th>Tổng</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@o.Id</td>
+                <td>@o.OrderDate.ToLocalTime()</td>
+                <td>@o.TotalAmount.ToString("#,0") ₫</td>
+                <td><a class="btn btn-sm btn-primary" asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">Xem & duyệt</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -11,51 +11,73 @@
     <h4>Product</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.Name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(m => m.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.Brand)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(m => m.Brand)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.Price)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+        <dd class="col-sm-10">
+            @string.Format("{0:N0} ₫", Model.Price) 
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.Description)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(m => m.Description)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
+
+        <dt class="col-sm-2">
+            Ảnh sản phẩm
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
+        <dd class="col-sm-10">
+            @{
+                var img = string.IsNullOrWhiteSpace(Model.ImageUrl)
+                ? Url.Content("~/images/placeholder.png") 
+                : Model.ImageUrl;                         
+            }
+            <img src="@img"
+                 alt="@Model.Name"
+                 style="max-width: 280px; height: auto; border: 1px solid #eee; border-radius: 8px; padding: 4px;" />
+
+          
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <div class="mt-2">
+                    <a href="@Model.ImageUrl" target="_blank" rel="noopener">Mở ảnh gốc</a>
+                </div>
+            }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.Stock)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(m => m.Stock)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(m => m.CreatedAt)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
+        <dd class="col-sm-10">
+            @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary btn-sm ms-2">Back to List</a>
 </div>
