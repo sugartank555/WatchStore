@@ -53,11 +53,8 @@
                         </div>
                         <div align="center">
                             <!-- Product actions-->
-                            <form asp-controller="Products" asp-action="Details" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <button class="btn btn-primary">Xem chi tiết</button>
-                            </form>
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Xem chi tiết</a>
+
                         </div>
                         <div align="center">
                             <!-- Product actions-->
