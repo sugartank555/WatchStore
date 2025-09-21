@@ -1,0 +1,57 @@
+﻿@model List<WatchStore.Controllers.OrderListVm>
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string PriceVN(decimal p) => string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", p);
+    Func<string, string> Badge = s => s switch
+    {
+        "Pending" => "badge bg-warning",
+        "Confirmed" => "badge bg-primary",
+        "Shipped" => "badge bg-info",
+        "Delivered" => "badge bg-success",
+        "Rejected" => "badge bg-secondary",
+        _ => "badge bg-light text-dark"
+    };
+}
+
+<div class="container py-4">
+    <h2 class="mb-3">@ViewData["Title"]</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào. <a asp-controller="Products" asp-action="Index">Mua sắm ngay</a>.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <td>#@o.Id</td>
+                            <td>@o.OrderDate.ToLocalTime()</td>
+                            <td>@PriceVN(o.TotalAmount)</td>
+                            <td><span class="@Badge(o.Status)">@o.Status</span></td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   asp-controller="MyOrders" asp-action="Details" asp-route-id="@o.Id">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,160 @@
+﻿@model WatchStore.Controllers.OrderDetailsVm
+@{
+    ViewData["Title"] = $"Đơn hàng #{Model.Id}";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string PriceVN(decimal p) => string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", p);
+
+    // tạo step index để hiển thị tiến trình
+    int Step(string s) => s switch
+    {
+        "Pending" => 1,
+        "Confirmed" => 2,
+        "Shipped" => 3,
+        "Delivered" => 4,
+        "Rejected" => 0,
+        _ => 1
+    };
+    var cur = Step(Model.Status);
+}
+
+<style>
+    .timeline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0 20px;
+    }
+
+    .tl-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #d1d5db;
+    }
+
+        .dot.active {
+            background: #2563eb;
+        }
+
+    .line {
+        width: 50px;
+        height: 3px;
+        background: #d1d5db;
+    }
+
+        .line.active {
+            background: #2563eb;
+        }
+
+    .tl-label {
+        font-size: .9rem;
+        color: #475569;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="mb-0">@ViewData["Title"]</h2>
+        <a class="btn btn-outline-secondary" asp-controller="MyOrders" asp-action="Index">Quay lại</a>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="text-muted small">Ngày đặt</div>
+                    <div class="fw-semibold">@Model.OrderDate.ToLocalTime()</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Trạng thái</div>
+                    <div class="fw-semibold">@Model.Status</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-muted small">Tổng tiền</div>
+                    <div class="fw-semibold text-primary">@PriceVN(Model.TotalAmount)</div>
+                </div>
+            </div>
+
+            <!-- Timeline trạng thái -->
+            <div class="timeline mt-3">
+                <div class="tl-step text-center">
+                    <div class="dot @(cur >= 1 ? "active" : "")"></div>
+                    <div class="tl-label">Đã đặt</div>
+                </div>
+                <div class="line @(cur >= 2 ? "active" : "")"></div>
+                <div class="tl-step text-center">
+                    <div class="dot @(cur >= 2 ? "active" : "")"></div>
+                    <div class="tl-label">Xác nhận</div>
+                </div>
+                <div class="line @(cur >= 3 ? "active" : "")"></div>
+                <div class="tl-step text-center">
+                    <div class="dot @(cur >= 3 ? "active" : "")"></div>
+                    <div class="tl-label">Giao hàng</div>
+                </div>
+                <div class="line @(cur >= 4 ? "active" : "")"></div>
+                <div class="tl-step text-center">
+                    <div class="dot @(cur >= 4 ? "active" : "")"></div>
+                    <div class="tl-label">Hoàn tất</div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.AdminNote))
+            {
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle"></i> Ghi chú cửa hàng: @Model.AdminNote
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light fw-semibold">Thông tin giao hàng</div>
+        <div class="card-body">
+            <div><span class="text-muted small">Người nhận:</span> @Model.ReceiverName</div>
+            <div><span class="text-muted small">Địa chỉ:</span> @Model.ShippingAddress</div>
+            <div><span class="text-muted small">SĐT:</span> @Model.Phone</div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header bg-light fw-semibold">Sản phẩm</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th class="text-end" style="width:120px">Đơn giá</th>
+                            <th class="text-center" style="width:80px">SL</th>
+                            <th class="text-end" style="width:140px">Tạm tính</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var i in Model.Items)
+                        {
+                            <tr>
+                                <td>@i.ProductName</td>
+                                <td class="text-end">@PriceVN(i.UnitPrice)</td>
+                                <td class="text-center">@i.Quantity</td>
+                                <td class="text-end">@PriceVN(i.Subtotal)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Tổng cộng</th>
+                            <th class="text-end">@PriceVN(Model.TotalAmount)</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

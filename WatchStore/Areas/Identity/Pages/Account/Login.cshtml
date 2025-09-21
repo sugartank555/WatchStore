@@ -1,43 +1,240 @@
 ﻿@page
 @model LoginModel
-
 @{
     ViewData["Title"] = "Đăng nhập";
+    Layout = null;
 }
 
-<div class="d-flex align-items-center justify-content-center vh-100">
-    <div class="card shadow p-4" style="max-width: 400px; width:100%;">
-        <h2 class="text-center mb-4">Đăng nhập</h2>
+<style>
+    :root {
+        --bg1: #eef3ff;
+        --bg2: #f7f1ff;
+        --card: #ffffff;
+        --primary: #2563eb; /* xanh chủ đạo */
+        --primary-hover: #1e40af;
+        --text: #0f172a; /* slate-900 */
+        --muted: #64748b; /* slate-500 */
+        --ring: rgba(37,99,235,.18);
+        --radius: 14px;
+    }
+
+    /* Nền full & căn giữa tuyệt đối */
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(1200px 600px at 10% 0%, var(--bg1), transparent 60%), radial-gradient(1100px 600px at 100% 100%, var(--bg2), transparent 60%), #f8fafc;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        color: var(--text);
+    }
+
+    .login-shell {
+        width: min(920px, 96vw);
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 28px;
+    }
+    @@media (max-width: 880px) {
+        .login-shell
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* Panel trái – brand */
+    .brand {
+        background: linear-gradient(145deg, #111827, #0b1020);
+        color: #e5e7eb;
+        border-radius: var(--radius);
+        padding: 36px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 30px 60px rgba(0,0,0,.20);
+        min-height: 520px;
+    }
+
+        .brand h1 {
+            font-size: clamp(24px, 3.2vw, 30px);
+            margin: 0 0 6px 0;
+            font-weight: 800;
+            letter-spacing: .2px;
+        }
+
+        .brand p {
+            color: #a3aed0;
+            margin: 0;
+        }
+
+        .brand .hero {
+            margin-top: 30px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(59,130,246,.35), rgba(147,51,234,.35));
+            backdrop-filter: blur(6px);
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+    /* Panel phải – form */
+    .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 32px 28px;
+        box-shadow: 0 2px 8px rgba(15,23,42,.05), 0 20px 60px rgba(15,23,42,.10);
+    }
+
+    .heading {
+        margin: 0 0 18px 0;
+        font-weight: 800;
+        font-size: 28px;
+        letter-spacing: .2px;
+    }
+
+    .sub {
+        color: var(--muted);
+        margin: 0 0 22px 0;
+    }
+
+    .form-label {
+        font-size: .92rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        color: #111827;
+    }
+
+    .form-control {
+        width: 100%;
+        height: 46px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        padding: 10px 12px;
+        font-size: .96rem;
+        transition: box-shadow .2s, border-color .2s, background-color .2s;
+        background: #fbfdff;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--ring);
+            background: #fff;
+        }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0 18px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        transition: transform .06s ease, background-color .15s ease;
+    }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+    .links {
+        margin-top: 18px;
+        text-align: center;
+    }
+
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .links a:hover {
+                text-decoration: underline;
+            }
+
+    .hr {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 18px 0;
+    }
+
+    .val-summary {
+        color: #ef4444;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="login-shell">
+    <!-- Panel trái: brand / giới thiệu -->
+    <aside class="brand">
+        <div>
+            <h1>WatchStore</h1>
+            <p>Đăng nhập để quản lý đơn hàng, theo dõi vận chuyển và lưu danh sách yêu thích của bạn.</p>
+            <div class="hero">
+                <strong>Ưu đãi hôm nay</strong>
+                <p style="margin:6px 0 0; color:#e5e7eb;">Giảm đến 20% cho dòng Automatic – chỉ dành cho thành viên.</p>
+            </div>
+        </div>
+        <p style="font-size:.9rem;">© @DateTime.Now.Year WatchStore. All rights reserved.</p>
+    </aside>
+
+    <!-- Panel phải: form -->
+    <section class="card">
+        <h2 class="heading">Đăng nhập</h2>
+        <p class="sub">Rất vui được gặp lại bạn 👋</p>
+
         <form id="account" method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="All" class="val-summary"></div>
 
-            <div class="mb-3">
-                <label asp-for="Input.Email" class="form-label"></label>
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
+            <label asp-for="Input.Email" class="form-label"></label>
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
 
-            <div class="mb-3">
-                <label asp-for="Input.Password" class="form-label"></label>
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
+            <div style="height:12px"></div>
 
-            <div class="mb-3 form-check">
+            <label asp-for="Input.Password" class="form-label"></label>
+            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <div class="form-check">
                 <input asp-for="Input.RememberMe" class="form-check-input" />
                 <label asp-for="Input.RememberMe" class="form-check-label"></label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+            <button type="submit" class="btn">Đăng nhập</button>
 
-            <hr />
-            <div class="text-center">
+            <div class="hr"></div>
+            <div class="links">
                 <p><a id="forgot-password" asp-page="./ForgotPassword">Quên mật khẩu?</a></p>
-                <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký làm người dùng mới</a></p>
-               
+                <p>
+                    Chưa có tài khoản?
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a>
+                </p>
             </div>
         </form>
-    </div>
+    </section>
 </div>
 
 @section Scripts {

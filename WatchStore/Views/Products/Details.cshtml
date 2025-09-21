@@ -1,76 +1,103 @@
 ﻿@model WatchStore.Models.Product
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var img = string.IsNullOrWhiteSpace(Model.ImageUrl)
+        ? "/images/placeholder.png"
+        : Model.ImageUrl;
+
+    string PriceVN(decimal p) => string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", p);
+
+    // Nhãn tồn kho
+    var inStock = Model.Stock > 0;
 }
 
-<h1>Chi tiết sản phẩm</h1>
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Sản phẩm</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
 
-<div>
-    <h4>Thông tin</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+    <div class="row g-4">
+        <!-- Ảnh sản phẩm -->
+        <div class="col-12 col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <img src="@img" alt="@Model.Name" class="card-img-top" style="object-fit:cover; max-height:520px;">
+            </div>
+            @* Thương hiệu *@
+            <div class="mt-3">
+                <span class="badge rounded-pill text-bg-light border">
+                    <i class="bi bi-award"></i> @Model.Brand
+                </span>
+            </div>
+        </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
+        <!-- Thông tin sản phẩm -->
+        <div class="col-12 col-lg-7">
+            <div class="d-flex align-items-start justify-content-between mb-2">
+                <h1 class="h3 mb-0">@Model.Name</h1>
+                <span class="badge @((inStock ? "text-bg-success" : "text-bg-secondary"))">
+                    @(inStock ? "Còn hàng" : "Hết hàng")
+                </span>
+            </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price) VNĐ
-        </dd>
+            <div class="display-6 fw-bold text-primary mb-3">
+                @PriceVN(Model.Price)
+            </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt class="col-sm-2">
-            Hình ảnh
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl)
-                ? "/images/placeholder.png"
-                : Model.ImageUrl;
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div class="mb-4">
+                    <h6 class="text-muted text-uppercase mb-2">Mô tả</h6>
+                    <div class="p-3 rounded border bg-light">
+                        @Model.Description
+                    </div>
+                </div>
             }
-            <img src="@imageUrl" alt="@Model.Name" style="max-height: 300px;" class="img-fluid rounded border" />
-        </dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Stock)
-        </dd>
+            <div class="row gy-2 mb-4 small">
+                <div class="col-6">
+                    <div class="text-muted">Mã SP</div>
+                    <div class="fw-semibold">#@Model.Id</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted">Tồn kho</div>
+                    <div class="fw-semibold">@Model.Stock</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted">Thương hiệu</div>
+                    <div class="fw-semibold">@Model.Brand</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted">Ngày tạo</div>
+                    <div class="fw-semibold">@Model.CreatedAt.ToLocalTime()</div>
+                </div>
+            </div>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-    </dl>
-</div>
+            <!-- Hành động -->
+            <div class="d-flex flex-wrap gap-2">
+                <form asp-area="" asp-controller="Cart" asp-action="Add" method="post" class="d-flex align-items-center gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="number" name="quantity" value="1" min="1" class="form-control" style="width:110px" @(inStock ? null : "disabled") />
+                    <button type="submit" class="btn btn-primary" @(inStock ? null : "disabled")>
+                        <i class="bi bi-bag-plus"></i> Thêm vào giỏ
+                    </button>
+                </form>
 
-<div>
-   
-   
-    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
-   
+                <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
 
+            @* Gợi ý: hiện một lưu ý nho nhỏ *@
+            <div class="text-muted small mt-3">
+                <i class="bi bi-shield-check"></i> Bảo hành chính hãng. Đổi trả trong 7 ngày nếu lỗi nhà sản xuất.
+            </div>
+        </div>
+    </div>
 </div>

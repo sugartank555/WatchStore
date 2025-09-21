@@ -1,71 +1,166 @@
-﻿@model IEnumerable<WatchStore.Models.Product>
+﻿@model WatchStore.Models.ViewModels.ProductIndexVm
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_LayoutHeader" />
 
-<!-- CSS trực tiếp -->
 <style>
-    .card-img-top {
-        transition: transform 0.5s ease;
-        object-fit: cover;
-    }
-
-    .card:hover .card-img-top {
-        transform: scale(1.5);
-    }
-
-    .card {
+    .product-card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        transition: transform .25s ease, box-shadow .25s ease;
         overflow: hidden;
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+        }
+
+        .product-card img {
+            height: 250px;
+            object-fit: cover;
+            transition: transform .5s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .product-card .card-body {
+            padding: 16px;
+        }
+
+        .product-card h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .product-card .price {
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px;
+        border-top: 1px solid #f1f1f1;
+        background: #fafafa;
+    }
+
+    .btn-outline-dark {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+        .btn-outline-dark:hover {
+            background: #111827;
+            color: #fff;
+        }
+
+    .btn-primary {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 14px;
     }
 </style>
 
-<section class="py-5">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            @foreach (var item in Model)
-            {
-                <div class="col mb-5">
-                    <div class="card h-100">
-                        <!-- Product image-->
-                        @{
-                            var img = string.IsNullOrWhiteSpace(item.ImageUrl)
-                            ? "/images/placeholder.png"
-                            : item.ImageUrl;
-                        }
-                        <img src="@img" alt="@item.Name" class="card-img-top" />
+<section class="py-4">
+    <div class="container px-4 px-lg-5 mt-3">
 
-                        <!-- Product details-->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <h5 class="fw-bolder">@item.Name</h5>
+        <!-- Thanh tìm kiếm + lọc Brand (GET) -->
+        <form method="get" asp-controller="Products" asp-action="Index" class="row g-2 align-items-end mb-4">
+            <div class="col-12 col-md-6">
+                <label class="form-label">Tìm kiếm</label>
+                <input type="text" name="q" value="@Model.Q" class="form-control"
+                       placeholder="Nhập tên/mô tả sản phẩm..." />
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label class="form-label">Thương hiệu</label>
+                <select name="brand" class="form-select">
+                    <option value="">-- Tất cả --</option>
+                    @foreach (var b in Model.Brands)
+                    {
+                        <option value="@b" selected="@(Model.Brand == b)">
+                            @b
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-12 col-md-2 d-grid">
+                <button class="btn btn-primary"><i class="bi bi-search"></i> Lọc</button>
+            </div>
+
+            @* Nút xóa filter *@
+            @if (!string.IsNullOrWhiteSpace(Model.Q) || !string.IsNullOrWhiteSpace(Model.Brand))
+            {
+                <div class="col-12 mt-1">
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                        Xóa bộ lọc
+                    </a>
+                </div>
+            }
+        </form>
+
+        <!-- Lưới sản phẩm -->
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
+            @if (!Model.Products.Any())
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">Không tìm thấy sản phẩm nào phù hợp. Hãy thử từ khóa khác hoặc chọn thương hiệu khác.</div>
+                </div>
+            }
+            else
+            {
+                @foreach (var item in Model.Products)
+                {
+                    var img = string.IsNullOrWhiteSpace(item.ImageUrl) ? "/images/placeholder.png" : item.ImageUrl;
+
+                    <div class="col mb-5">
+                        <div class="card product-card h-100">
+                            <!-- Hình -->
+                            <img src="@img" alt="@item.Name" class="card-img-top" />
+
+                            <!-- Thông tin -->
+                            <div class="card-body text-center">
+                                <h5>@item.Name</h5>
                                 <div class="d-flex justify-content-center small text-warning mb-2">
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
-                                    <div class="bi-star-fill"></div>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
                                 </div>
-                                <span>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.Price)</span>
+                                <div class="price">
+                                    @string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.Price)
+                                </div>
+                            </div>
+
+                            <!-- Hành động -->
+                            <div class="action-buttons">
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-outline-dark">
+                                    Xem chi tiết
+                                </a>
+
+                                <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="productId" value="@item.Id" />
+                                    <button class="btn btn-primary">Thêm giỏ</button>
+                                </form>
                             </div>
                         </div>
-                        <div align="center">
-                            <!-- Product actions-->
-                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Xem chi tiết</a>
-
-                        </div>
-                        <div align="center">
-                            <!-- Product actions-->
-                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <button class="btn btn-primary">Thêm vào giỏ hàng</button>
-                            </form>
-                        </div>
                     </div>
-                </div>
+                }
             }
         </div>
     </div>
