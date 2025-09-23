@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using WatchStore.Data;
 using WatchStore.Services;
@@ -38,6 +39,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<ICartService, SessionCartService>();
 builder.Services.AddScoped<IEmailSenderSimple, SmtpEmailSender>();
 builder.Services.AddScoped<IAdminNotifier, AdminEmailNotifier>();
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".avif"] = "image/avif";
 
 var app = builder.Build();
 
@@ -73,7 +76,7 @@ app.MapControllerRoute(
 // Trang cửa hàng mặc định
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Products}/{action=Index}/{id?}"
+    pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
 // Razor Pages (Identity)

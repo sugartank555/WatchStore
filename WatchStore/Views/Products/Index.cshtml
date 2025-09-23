@@ -4,7 +4,7 @@
     ViewData["Title"] = "Sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<partial name="_LayoutHeader" />
+
 
 <style>
     .product-card {
@@ -163,5 +163,17 @@
                 }
             }
         </div>
+        @{
+    ViewData["q"] = Model.Q;
+    ViewData["brand"] = Model.Brand;
+    ViewData["pageSize"] = Model.Paging.PageSize;
+}
+<partial name="_Pagination" model="new WatchStore.Models.ViewModels.PagedResult<object>{
+    Items = Array.Empty<object>(),
+    Page = Model.Paging.Page,
+    PageSize = Model.Paging.PageSize,
+    TotalItems = Model.Paging.TotalItems
+}" />
+
     </div>
 </section>

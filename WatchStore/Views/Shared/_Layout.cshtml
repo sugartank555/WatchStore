@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - Gentleman's Watch</title>
+    <title>@ViewData["Title"] - Sugar Watch</title>
 
     <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
@@ -17,7 +17,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-controller="Products" asp-action="Index">Gentleman's Watch</a>
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Sugar Watch</a>
 
             <!-- Toggler -->
             <button class="navbar-toggler" type="button"
@@ -31,22 +31,13 @@
                 <!-- Left -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">Home</a>
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
-                           role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index">All Products</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="#">Popular Items</a></li>
-                            <li><a class="dropdown-item" href="#">New Arrivals</a></li>
-                        </ul>
-                    </li>
+                    <li><a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">All Products</a></li>
 
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
@@ -83,11 +74,60 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-5 bg-dark mt-5">
+    <footer class="bg-dark text-light pt-5 pb-3 mt-5">
         <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Gentleman's Watch @DateTime.Now.Year</p>
+            <div class="row gy-4">
+                <!-- Cột 1: Logo + mô tả -->
+                <div class="col-md-4">
+                    <h5 class="fw-bold text-white mb-3">Sugar Watch</h5>
+                    <p class="small text-secondary">
+                        Cửa hàng đồng hồ cao cấp dành cho quý ông hiện đại.
+                        Cam kết sản phẩm chính hãng, bảo hành toàn quốc.
+                    </p>
+                </div>
+
+                <!-- Cột 2: Liên kết nhanh -->
+                <div class="col-md-2">
+                    <h6 class="fw-semibold text-uppercase">Liên kết</h6>
+                    <ul class="list-unstyled small">
+                        <li><a asp-area="" asp-controller="Products" asp-action="Index" class="text-decoration-none text-secondary">Sản phẩm</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-secondary">Giới thiệu</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact" class="text-decoration-none text-secondary">Liên hệ</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Login" class="text-decoration-none text-secondary">Tài khoản</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Liên hệ -->
+                <div class="col-md-3">
+                    <h6 class="fw-semibold text-uppercase">Liên hệ</h6>
+                    <ul class="list-unstyled small text-secondary">
+                        <li><i class="bi bi-geo-alt"></i> 123 Nguyễn Trãi, Hà Nội</li>
+                        <li><i class="bi bi-telephone"></i> 0123 456 789</li>
+                        <li><i class="bi bi-envelope"></i> support@gwatch.local</li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Mạng xã hội -->
+                <div class="col-md-3">
+                    <h6 class="fw-semibold text-uppercase">Kết nối</h6>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-secondary mt-4" />
+
+            <!-- Dòng bản quyền -->
+            <div class="text-center small text-secondary">
+                © @DateTime.Now.Year Sugar Watch. All rights reserved.
+            </div>
         </div>
     </footer>
+
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

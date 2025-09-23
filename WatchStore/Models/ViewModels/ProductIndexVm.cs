@@ -2,13 +2,13 @@
 {
     public class ProductIndexVm
     {
-        public IEnumerable<Product> Products { get; set; } = Enumerable.Empty<Product>();
-
-        // Dữ liệu cho filter
+        public PagedResult<Product> Paging { get; set; } = new();
         public List<string> Brands { get; set; } = new();
+        public string? Q { get; set; }
+        public string? Brand { get; set; }
 
-        // Trạng thái filter hiện tại
-        public string? Q { get; set; }        // từ khóa tìm kiếm
-        public string? Brand { get; set; }    // brand đang chọn
+        // Alias để tương thích view cũ (nếu có)
+        public IEnumerable<Product> Products => Paging.Items;
+
     }
 }

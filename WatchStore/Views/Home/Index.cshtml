@@ -1,8 +1,246 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model WatchStore.Models.ViewModels.HomeVm
+@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string PriceVN(decimal p) => string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} ₫", p);
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero {
+        border-radius: 16px;
+        background: linear-gradient(135deg, #0b1020, #111827);
+        color: #e5e7eb;
+        padding: clamp(28px, 5vw, 48px);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -20% -40% -20%;
+            height: 300px;
+            background: radial-gradient(400px 200px at 50% 0, rgba(59,130,246,.35), transparent), radial-gradient(400px 200px at 60% 30%, rgba(147,51,234,.35), transparent);
+            filter: blur(30px);
+        }
+
+        .hero h1 {
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
+
+    .benefit {
+        background: #0f172a;
+        color: #cbd5e1;
+        border-radius: 12px;
+        padding: 14px 16px;
+    }
+
+    .section-title {
+        font-weight: 800;
+        letter-spacing: .2px;
+    }
+
+    .product-card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,.08);
+        transition: transform .25s, box-shadow .25s;
+        overflow: hidden;
+        height: 100%;
+    }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 28px rgba(0,0,0,.15);
+        }
+
+        .product-card img {
+            height: 220px;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .product-card .price {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+    .brand-chip {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        background: #fff;
+        font-weight: 600;
+        color: #111827;
+        margin: 6px 8px 0 0;
+        transition: all .2s;
+    }
+
+        .brand-chip:hover {
+            background: #111827;
+            color: #fff;
+            text-decoration: none;
+        }
+</style>
+
+<div class="container py-4">
+
+    <!-- HERO -->
+    <section class="hero mb-4">
+        <div class="row align-items-center gx-4">
+            <div class="col-lg-7 position-relative" style="z-index:1">
+                <span class="badge bg-primary-subtle text-primary mb-2">Sưu tầm mới • 2025</span>
+                <h1 class="display-5 mb-2">Sugar Watch</h1>
+                <p class="mb-3">Đẳng cấp từ từng nhịp thời gian. Sản phẩm chính hãng, bảo hành toàn quốc.</p>
+
+                <!-- Tìm nhanh -->
+                <form method="get" asp-area="" asp-controller="Products" asp-action="Index" class="row g-2">
+                    <div class="col-sm-7">
+                        <input class="form-control form-control-lg" name="q" value="@Model.Q" placeholder="Tìm theo tên / mô tả…" />
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-select form-select-lg" name="brand">
+                            <option value="">Thương hiệu</option>
+                            @foreach (var b in Model.Brands)
+                            {
+                                <option value="@b" selected="@(Model.Brand == b)">@b</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2 d-grid">
+                        <button class="btn btn-primary btn-lg"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+
+                <div class="d-flex gap-2 mt-3">
+                    <div class="benefit"><i class="bi bi-shield-check"></i> Chính hãng 100%</div>
+                    <div class="benefit"><i class="bi bi-truck"></i> Giao nhanh</div>
+                    <div class="benefit"><i class="bi bi-arrow-repeat"></i> Đổi trả 7 ngày</div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-end position-relative" style="z-index:1">
+                <img src="~/images/a2dc92e8c3cd4f528869e749457f6895.jpg" alt="Hero" class="img-fluid rounded-4 border border-1 border-secondary"
+                     onerror="this.src='/images/hero-watch.jpg'" />
+            </div>
+        </div>
+    </section>
+
+    <!-- TOP BRANDS -->
+    <section class="mb-4">
+        <h3 class="section-title mb-3">Thương hiệu nổi bật</h3>
+        <div class="d-flex flex-wrap">
+            @foreach (var b in Model.Brands.Take(12))
+            {
+                <a class="brand-chip" asp-area="" asp-controller="Products" asp-action="Index" asp-route-brand="@b">@b</a>
+            }
+        </div>
+    </section>
+
+    <!-- NEW ARRIVALS -->
+    <section class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h3 class="section-title">Sản phẩm mới</h3>
+            <a class="btn btn-sm btn-outline-dark" asp-area="" asp-controller="Products" asp-action="Index">Xem tất cả</a>
+        </div>
+        <div class="row g-3">
+            @foreach (var p in Model.NewArrivals)
+            {
+                var img = string.IsNullOrWhiteSpace(p.ImageUrl) ? "/images/placeholder.png" : p.ImageUrl;
+                <div class="col-6 col-md-4 col-xl-3">
+                    <div class="card product-card">
+                        <img src="@img" alt="@p.Name" class="card-img-top" />
+                        <div class="card-body text-center">
+                            <div class="small text-muted">@p.Brand</div>
+                            <h6 class="fw-bold mb-1">@p.Name</h6>
+                            <div class="price">@PriceVN(p.Price)</div>
+                        </div>
+                        <div class="p-3 pt-0 d-flex justify-content-center gap-2">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@p.Id" class="btn btn-outline-dark btn-sm">Chi tiết</a>
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@p.Id" />
+                                <button class="btn btn-primary btn-sm">Thêm giỏ</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- BEST SELLERS -->
+    <section class="mb-4">
+        <h3 class="section-title mb-3">Bán chạy</h3>
+        <div class="row g-3">
+            @foreach (var p in Model.BestSellers)
+            {
+                var img = string.IsNullOrWhiteSpace(p.ImageUrl) ? "/images/placeholder.png" : p.ImageUrl;
+                <div class="col-6 col-md-4 col-xl-3">
+                    <div class="card product-card">
+                        <img src="@img" alt="@p.Name" class="card-img-top" />
+                        <div class="card-body text-center">
+                            <div class="small text-muted">@p.Brand</div>
+                            <h6 class="fw-bold mb-1">@p.Name</h6>
+                            <div class="price">@PriceVN(p.Price)</div>
+                        </div>
+                        <div class="p-3 pt-0 d-flex justify-content-center gap-2">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@p.Id" class="btn btn-outline-dark btn-sm">Chi tiết</a>
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@p.Id" />
+                                <button class="btn btn-primary btn-sm">Thêm giỏ</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS + NEWSLETTER -->
+    <section class="row g-3 align-items-stretch mb-4">
+        <div class="col-lg-6">
+            <div class="h-100 p-4 rounded-4 border bg-light">
+                <h5 class="mb-3"><i class="bi bi-chat-quote"></i> Khách hàng nói gì?</h5>
+                <blockquote class="blockquote mb-3">
+                    <p class="mb-0">“Đồng hồ đẹp, đóng gói kỹ, giao nhanh. Sẽ ủng hộ tiếp!”</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">Anh Minh — Hà Nội</figcaption>
+                <hr />
+                <blockquote class="blockquote mb-3">
+                    <p class="mb-0">“Tư vấn nhiệt tình, giá hợp lý, bảo hành rõ ràng.”</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">Chị Lan — TP.HCM</figcaption>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="h-100 p-4 rounded-4 border">
+                <h5 class="mb-2"><i class="bi bi-envelope-paper"></i> Đăng ký nhận tin</h5>
+                <p class="text-muted">Nhận ưu đãi & tin tức sản phẩm mới mỗi tuần.</p>
+                <form method="post" action="#">
+                    <div class="input-group">
+                        <input class="form-control form-control-lg" placeholder="Nhập email của bạn" />
+                        <button class="btn btn-dark btn-lg">Đăng ký</button>
+                    </div>
+                </form>
+                <small class="text-muted d-block mt-2">Chúng tôi tôn trọng quyền riêng tư của bạn.</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="mb-4">
+        <div class="p-4 p-md-5 rounded-4 text-center border">
+            <h4 class="mb-2">Sẵn sàng tìm chiếc đồng hồ tiếp theo?</h4>
+            <p class="text-muted mb-3">Khám phá bộ sưu tập hơn 500 mẫu từ các thương hiệu hàng đầu.</p>
+            <a class="btn btn-primary btn-lg" asp-controller="Products" asp-action="Index">Bắt đầu mua sắm</a>
+        </div>
+    </section>
+
 </div>

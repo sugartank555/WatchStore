@@ -1,0 +1,43 @@
+﻿@model WatchStore.Models.ViewModels.PagedResult<object>
+
+@{
+    // Dùng string cho asp-all-route-data
+    var route = new Dictionary<string, string>();
+
+    // Nhận q/brand/pageSize từ ViewData nếu có
+    if (ViewData["q"] is string q && !string.IsNullOrWhiteSpace(q)) route["q"] = q;
+    if (ViewData["brand"] is string b && !string.IsNullOrWhiteSpace(b)) route["brand"] = b;
+    if (ViewData["pageSize"] is int ps && ps != 12) route["pageSize"] = ps.ToString();
+
+    int start = Math.Max(1, Model.Page - 2);
+    int end = Math.Min(Model.TotalPages, Model.Page + 2);
+}
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-3">
+            @{
+                route["page"] = (Model.Page - 1).ToString();
+            }
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="route">«</a>
+            </li>
+
+            @for (int i = start; i <= end; i++)
+            {
+                route["page"] = i.ToString();
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="route">@i</a>
+                </li>
+            }
+
+            @{
+                route["page"] = (Model.Page + 1).ToString();
+            }
+            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="route">»</a>
+            </li>
+        </ul>
+    </nav>
+}

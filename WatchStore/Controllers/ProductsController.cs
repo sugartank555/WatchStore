@@ -18,9 +18,11 @@ namespace WatchStore.Controllers
         // GET: Products
         // Hỗ trợ tìm kiếm theo tên/mô tả và lọc theo brand
         [HttpGet]
-        public async Task<IActionResult> Index(string? q, string? brand)
+        public async Task<IActionResult> Index(string? q, string? brand, int page = 1, int pageSize = 12)
         {
-            // Lấy danh sách brand duy nhất
+            if (page < 1) page = 1;
+            if (pageSize < 1 || pageSize > 60) pageSize = 12;
+
             var brands = await _context.Products
                 .Where(p => !string.IsNullOrEmpty(p.Brand))
                 .Select(p => p.Brand!)
@@ -28,37 +30,44 @@ namespace WatchStore.Controllers
                 .OrderBy(b => b)
                 .ToListAsync();
 
-            // Query sản phẩm
             var query = _context.Products.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(q))
             {
                 q = q.Trim();
-                query = query.Where(p =>
-                    p.Name.Contains(q) ||
-                    (p.Description != null && p.Description.Contains(q)));
+                query = query.Where(p => p.Name.Contains(q) || (p.Description != null && p.Description.Contains(q)));
             }
-
             if (!string.IsNullOrWhiteSpace(brand))
             {
                 query = query.Where(p => p.Brand == brand);
             }
 
-            var products = await query
+            var total = await query.CountAsync();
+
+            var items = await query
                 .OrderByDescending(p => p.CreatedAt)
                 .ThenBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
             var vm = new ProductIndexVm
             {
-                Products = products,
                 Brands = brands,
                 Q = q,
-                Brand = brand
+                Brand = brand,
+                Paging = new PagedResult<Product>
+                {
+                    Items = items,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalItems = total
+                }
             };
 
             return View(vm);
         }
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
