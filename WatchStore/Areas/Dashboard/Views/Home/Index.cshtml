@@ -1,0 +1,235 @@
+﻿@{
+    ViewData["Title"] = "Bảng điều khiển";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+
+    int totalOrders = ViewBag.TotalOrders ?? 0;
+    int pendingOrders = ViewBag.PendingOrders ?? 0;
+    int confirmedOrders = ViewBag.ConfirmedOrders ?? 0;
+    decimal totalRevenue = ViewBag.TotalRevenue ?? 0m;
+
+    var labels = (IEnumerable<string>)(ViewBag.ChartLabels ?? Array.Empty<string>());
+    var revenue = (IEnumerable<decimal>)(ViewBag.ChartRevenue ?? Array.Empty<decimal>());
+
+    var statusLabels = (IEnumerable<string>)(ViewBag.StatusLabels ?? Array.Empty<string>());
+    var statusData = (IEnumerable<int>)(ViewBag.StatusData ?? Array.Empty<int>());
+
+    DateTime? from = ViewBag.From;
+    DateTime? to = ViewBag.To;
+}
+
+<style>
+    .kpi-card { border: none; border-radius: 14px; box-shadow: 0 6px 22px rgba(0,0,0,.06); }
+    .kpi-card .icon { font-size: 26px; opacity: .8; }
+    .section-title { font-weight: 800; letter-spacing: .2px; }
+    .table thead th { white-space: nowrap; }
+    .badge-status { font-weight:600; }
+</style>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <h2 class="mb-3 mb-sm-0">Bảng điều khiển</h2>
+
+        <!-- Bộ lọc thời gian -->
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label mb-1">Từ ngày</label>
+                <input type="date" name="from" class="form-control" value="@(from?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-auto">
+                <label class="form-label mb-1">Đến ngày</label>
+                <input type="date" name="to" class="form-control" value="@(to?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-auto d-grid">
+                <button class="btn btn-primary"><i class="bi bi-filter"></i> Lọc</button>
+            </div>
+            <div class="col-auto d-grid">
+                <a class="btn btn-outline-secondary" asp-area="Dashboard" asp-controller="Home" asp-action="Index">
+                    Xóa lọc
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted">Tổng số đơn</div>
+                        <div class="fs-3 fw-bold">@totalOrders</div>
+                    </div>
+                    <i class="bi bi-bag-check icon text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted">Đơn chờ xác nhận</div>
+                        <div class="fs-3 fw-bold">@pendingOrders</div>
+                    </div>
+                    <i class="bi bi-hourglass-split icon text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted">Đơn đã xác nhận</div>
+                        <div class="fs-3 fw-bold">@confirmedOrders</div>
+                    </div>
+                    <i class="bi bi-check2-circle icon text-success"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="card kpi-card">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted">Doanh thu</div>
+                        <div class="fs-3 fw-bold">@totalRevenue.ToString("#,0") ₫</div>
+                    </div>
+                    <i class="bi bi-currency-dollar icon text-dark"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">
+                    <span class="section-title">Doanh thu theo tháng</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="110"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-white">
+                    <span class="section-title">Tỉ lệ trạng thái đơn</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" height="110"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span class="section-title">Đơn hàng gần đây</span>
+            <a class="btn btn-sm btn-outline-dark" asp-area="Dashboard" asp-controller="Orders" asp-action="Index">Xem tất cả</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Ngày</th>
+                        <th>Khách</th>
+                        <th class="text-end">Tổng</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in (IEnumerable<WatchStore.Models.Order>)ViewBag.RecentOrders)
+                    {
+                        var badge = o.Status switch
+                        {
+                            "Pending" => "bg-warning text-dark",
+                            "Paid" => "bg-success",
+                            "Confirmed" => "bg-primary",
+                            "Rejected" => "bg-danger",
+                            "Cancelled" => "bg-secondary",
+                            _ => "bg-light text-dark"
+                        };
+                        <tr>
+                            <td>@o.Id</td>
+                            <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@(o.User?.UserName ?? "-")</td>
+                            <td class="text-end">@o.TotalAmount.ToString("#,0") ₫</td>
+                            <td><span class="badge badge-status @badge">@o.Status</span></td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-area="Dashboard" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="card shadow-sm">
+        <div class="card-body d-flex flex-wrap gap-2">
+            <a class="btn btn-dark" asp-area="" asp-controller="Products" asp-action="Index">
+                <i class="bi bi-bag"></i> Xem sản phẩm
+            </a>
+            <a class="btn btn-outline-dark" asp-area="Dashboard" asp-controller="Orders" asp-action="Pending">
+                <i class="bi bi-hourglass-split"></i> Duyệt đơn chờ
+            </a>
+            <a class="btn btn-outline-secondary" asp-area="Dashboard" asp-controller="Orders" asp-action="Index">
+                <i class="bi bi-table"></i> Quản lý tất cả đơn
+            </a>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        // Revenue Line
+        const revLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labels));
+        const revData   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(revenue));
+
+        const ctxRev = document.getElementById('revenueChart');
+        new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: revLabels,
+                datasets: [{
+                    label: 'Doanh thu (₫)',
+                    data: revData,
+                    tension: .3,
+                    fill: true
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: (v) => new Intl.NumberFormat('vi-VN').format(v)
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Doughnut
+        const stLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(statusLabels));
+        const stData   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(statusData));
+
+        const ctxSt = document.getElementById('statusChart');
+        new Chart(ctxSt, {
+            type: 'doughnut',
+            data: { labels: stLabels, datasets: [{ data: stData }] },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+    </script>
+}
