@@ -27,5 +27,7 @@ namespace WatchStore.Models
         [StringLength(400)] public string? AdminNote { get; set; }
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+ 
+
     }
 }

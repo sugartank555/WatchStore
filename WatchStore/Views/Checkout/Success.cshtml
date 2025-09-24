@@ -26,3 +26,16 @@
 
 <p>Tổng: <b>@Model.TotalAmount.ToString("#,0") ₫</b></p>
 <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">Tiếp tục mua sắm</a>
+@if (Model.Status == "Draft" || Model.Status == "Created" || Model.Status == "Pending")
+{
+    <form asp-controller="Payments" asp-action="Submit" method="post" class="d-inline">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="orderId" value="@Model.Id" />
+        <button class="btn btn-success">Gửi yêu cầu xác nhận</button>
+    </form>
+
+    @* Tuỳ chọn: nút xem hướng dẫn chuyển khoản *@
+    <a asp-controller="Payments" asp-action="Instructions" asp-route-orderId="@Model.Id" class="btn btn-outline-secondary ms-2">
+        Hướng dẫn thanh toán
+    </a>
+}

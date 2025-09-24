@@ -1,0 +1,27 @@
+﻿@model WatchStore.Models.Order
+@{
+    ViewData["Title"] = "Hướng dẫn thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container py-4">
+    <h3 class="mb-3">Hướng dẫn thanh toán</h3>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p>Vui lòng chuyển khoản theo thông tin dưới đây, sau đó nhấn “Gửi yêu cầu xác nhận”. Admin sẽ kiểm tra và duyệt đơn:</p>
+            <ul>
+                <li>Ngân hàng: <b>@(ViewBag.BankName ?? "N/A")</b></li>
+                <li>Chủ tài khoản: <b>@(ViewBag.AccountName ?? "N/A")</b></li>
+                <li>Số tài khoản: <b>@(ViewBag.AccountNumber ?? "N/A")</b></li>
+                <li>Nội dung chuyển khoản: <b>@(ViewBag.TransferNote ?? $"ORDER{Model.Id}")</b></li>
+                <li>Số tiền: <b>@Model.TotalAmount.ToString("#,0") ₫</b></li>
+            </ul>
+
+            <form asp-controller="Payments" asp-action="Submit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderId" value="@Model.Id" />
+                <button class="btn btn-success">Gửi yêu cầu xác nhận</button>
+                <a asp-controller="MyOrders" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary ms-2">Quay lại đơn hàng</a>
+            </form>
+        </div>
+    </div>
+</div>
