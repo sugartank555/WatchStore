@@ -1,55 +1,134 @@
-﻿@model IEnumerable<WatchStore.Models.Product>
-
+﻿@model WatchStore.Models.ViewModels.AdminProductsIndexVm
 @{
-    ViewData["Title"] = "Danh sách sản phẩm ";
+    ViewData["Title"] = "Sản phẩm";
     Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<h1>Danh sách sản phẩm</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Quản lý sản phẩm</h3>
+    <a asp-area="Dashboard" asp-controller="Products" asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Thêm sản phẩm
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Thêm sản phẩm</a>
-</p>
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-12 col-md-5">
+        <label class="form-label">Tìm kiếm</label>
+        <input type="text" name="q" value="@Model.Q" class="form-control" placeholder="Tên hoặc mô tả..." />
+    </div>
+    <div class="col-12 col-md-4">
+        <label class="form-label">Thương hiệu</label>
+        <select name="brand" class="form-select">
+            <option value="">-- Tất cả --</option>
+            @foreach (var b in Model.Brands)
+            {
+                <option value="@b" selected="@(Model.Brand == b)">@b</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label">Mỗi trang</label>
+        <select name="pageSize" class="form-select">
+            @{
+                var sizes = new[] { 8, 12, 24, 48, 100 };
+            }
+            @foreach (var s in sizes)
+            {
+                <option value="@s" selected="@(Model.PageSize == s)">@s</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-1 d-grid">
+        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+    </div>
+</form>
 
-<table class="table table-striped align-middle">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Brand)</th>
-            <th>@Html.DisplayNameFor(model => model.Price)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>Image</th> 
-            <th>@Html.DisplayNameFor(model => model.Stock)</th>
-            <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(_ => item.Name)</td>
-                <td>@Html.DisplayFor(_ => item.Brand)</td>
-                <td>@item.Price.ToString("N0")</td> 
-                <td class="text-truncate" style="max-width:320px;">@Html.DisplayFor(_ => item.Description)</td>
-                <td>
-                    @{
-                        var img = string.IsNullOrWhiteSpace(item.ImageUrl)
-                        ? "/images/placeholder.png"   
-                        : item.ImageUrl;
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width:80px;">Ảnh</th>
+                    <th>Tên</th>
+                    <th>Brand</th>
+                    <th class="text-end">Giá</th>
+                    <th class="text-center">Tồn</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:210px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Items.Any())
+                {
+                    <tr><td colspan="7"><div class="alert alert-info m-2">Không có sản phẩm.</div></td></tr>
+                }
+                else
+                {
+                    foreach (var p in Model.Items)
+                    {
+                        var img = string.IsNullOrWhiteSpace(p.ImageUrl) ? "/images/placeholder.png" : p.ImageUrl;
+                        <tr>
+                            <td><img src="@img" alt="@p.Name" style="height:54px;width:54px;object-fit:cover;border-radius:6px;" /></td>
+                            <td>@p.Name</td>
+                            <td>@p.Brand</td>
+                            <td class="text-end">@p.Price.ToString("#,0") ₫</td>
+                            <td class="text-center">@p.Stock</td>
+                            <td>@p.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary" asp-area="Dashboard" asp-controller="Products" asp-action="Details" asp-route-id="@p.Id">Xem</a>
+                                <a class="btn btn-sm btn-outline-primary" asp-area="Dashboard" asp-controller="Products" asp-action="Edit" asp-route-id="@p.Id">Sửa</a>
+                                <a class="btn btn-sm btn-outline-danger" asp-area="Dashboard" asp-controller="Products" asp-action="Delete" asp-route-id="@p.Id">Xóa</a>
+                            </td>
+                        </tr>
                     }
-                    <img src="@img"
-                         alt="@item.Name"
-                         style="width:100px; height:auto; object-fit:cover; border-radius:8px;" />
-                </td>
-                <td>@Html.DisplayFor(_ => item.Stock)</td>
-                <td>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* Phân trang *@
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <div>
+            Trang <strong>@Model.Page</strong> / @Model.TotalPages —
+            Tổng: <strong>@Model.TotalItems</strong> sản phẩm
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Pagination">
+                <ul class="pagination mb-0">
+                    @{
+                        string q = Model.Q ?? "";
+                        string brand = Model.Brand ?? "";
+                        int prev = Model.Page - 1;
+                        int next = Model.Page + 1;
+                    }
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-area="Dashboard" asp-controller="Products" asp-action="Index"
+                           asp-route-q="@q" asp-route-brand="@brand" asp-route-page="@(Model.Page - 1)" asp-route-pageSize="@Model.PageSize">
+                            «
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link"
+                               asp-area="Dashboard" asp-controller="Products" asp-action="Index"
+                               asp-route-q="@q" asp-route-brand="@brand" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-area="Dashboard" asp-controller="Products" asp-action="Index"
+                           asp-route-q="@q" asp-route-brand="@brand" asp-route-page="@(Model.Page + 1)" asp-route-pageSize="@Model.PageSize">
+                            »
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         }
-    </tbody>
-</table>
+    </div>
+</div>
