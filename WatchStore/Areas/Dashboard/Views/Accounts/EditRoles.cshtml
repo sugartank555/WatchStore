@@ -1,0 +1,37 @@
+﻿@model WatchStore.Models.ViewModels.EditUserRolesVm
+@{
+    ViewData["Title"] = "Sửa vai trò";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+}
+<div class="col-lg-6 p-0">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">@ViewData["Title"] - @Model.Email</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Chọn vai trò</label>
+                    <div class="row">
+                        @foreach (var r in Model.AllRoles)
+                        {
+                            var checkedAttr = Model.UserRoles.Contains(r) ? "checked" : "";
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedRoles" value="@r" @(checkedAttr) id="r_@r">
+                                    <label class="form-check-label" for="r_@r">@r</label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <button class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

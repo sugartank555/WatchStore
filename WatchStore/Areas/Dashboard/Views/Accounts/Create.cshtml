@@ -1,0 +1,34 @@
+﻿@model WatchStore.Models.ViewModels.CreateUserVm
+@{
+    ViewData["Title"] = "Tạo tài khoản";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+}
+<div class="col-lg-6 p-0">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">@ViewData["Title"]</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                </div>
+                <div class="form-check mb-3">
+                    <input asp-for="IsAdmin" class="form-check-input" />
+                    <label class="form-check-label" asp-for="IsAdmin">Thêm vào role Admin</label>
+                </div>
+
+                <button class="btn btn-primary">Tạo</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

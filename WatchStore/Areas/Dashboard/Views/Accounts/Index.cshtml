@@ -1,0 +1,129 @@
+﻿@model WatchStore.Models.ViewModels.AdminUsersIndexVm
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+    Layout = "~/Areas/Dashboard/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">@ViewData["Title"]</h3>
+    <a asp-area="Dashboard" asp-controller="Accounts" asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Tạo tài khoản
+    </a>
+</div>
+
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-12 col-md-6">
+        <label class="form-label">Tìm kiếm</label>
+        <input type="text" name="q" value="@Model.Q" class="form-control" placeholder="Email hoặc UserName..." />
+    </div>
+    <div class="col-6 col-md-2">
+        <label class="form-label">Mỗi trang</label>
+        <select name="pageSize" class="form-select">
+            @foreach (var s in new[] { 10, 20, 50, 100 })
+            {
+                <option value="@s" selected="@(Model.PageSize == s)">@s</option>
+            }
+        </select>
+    </div>
+    <div class="col-6 col-md-1 d-grid">
+        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Email</th>
+                    <th>UserName</th>
+                    <th>Vai trò</th>
+                    <th>Khóa</th>
+                    <th style="width:260px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Items.Any())
+                {
+                    <tr><td colspan="5"><div class="alert alert-info m-2">Không có tài khoản.</div></td></tr>
+                }
+                else
+                {
+                    foreach (var u in Model.Items)
+                    {
+                        var roles = Model.UserRoles.TryGetValue(u.Id, out var r) ? string.Join(", ", r) : "-";
+                        bool locked = u.LockoutEnd.HasValue && u.LockoutEnd.Value > DateTimeOffset.UtcNow;
+                        <tr>
+                            <td>@u.Email</td>
+                            <td>@u.UserName</td>
+                            <td>@roles</td>
+                            <td>
+                                @if (locked)
+                                {
+                                    <span class="badge bg-danger">Locked</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   asp-action="EditRoles" asp-route-id="@u.Id">
+                                    <i class="fas fa-user-shield"></i> Sửa vai trò
+                                </a>
+                                @if (locked)
+                                {
+                                    <form asp-action="Unlock" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@u.Id" />
+                                        <button class="btn btn-sm btn-outline-success"><i class="fas fa-lock-open"></i> Mở khóa</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="Lock" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@u.Id" />
+                                        <button class="btn btn-sm btn-outline-warning"><i class="fas fa-lock"></i> Khóa</button>
+                                    </form>
+                                }
+                                <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Xóa tài khoản này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i> Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <div>
+            Trang <strong>@Model.Page</strong> / @Model.TotalPages — Tổng: <strong>@Model.TotalItems</strong> người dùng
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-route-q="@Model.Q" asp-route-page="@(Model.Page - 1)" asp-route-pageSize="@Model.PageSize">«</a>
+                    </li>
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" asp-route-q="@Model.Q" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.Page == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-route-q="@Model.Q" asp-route-page="@(Model.Page + 1)" asp-route-pageSize="@Model.PageSize">»</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

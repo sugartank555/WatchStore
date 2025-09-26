@@ -74,6 +74,14 @@
                     <span>Sản phẩm</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Accounts" ? "active" : "")"
+                   asp-area="Dashboard" asp-controller="Accounts" asp-action="Index">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Tài khoản</span>
+                </a>
+            </li>
+
 
             <hr class="sidebar-divider d-none d-md-block" />
 
