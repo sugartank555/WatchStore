@@ -12,61 +12,116 @@
     <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="~/css/styles.css" rel="stylesheet" />
+    <style>
+        .navbar-glass {
+            background-color: color-mix(in srgb, var(--bs-body-bg) 70%, transparent);
+            backdrop-filter: saturate(180%) blur(14px)
+        }
+
+            .navbar-glass .nav-link {
+                font-weight: 600
+            }
+
+                .navbar-glass .nav-link:hover {
+                    color: var(--bs-primary)
+                }
+
+        .btn-icon {
+            --size: 40px;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px
+        }
+
+        .nav-search .form-control:focus {
+            box-shadow: 0 0 0 .2rem rgba(13,110,253,.15)
+        }
+        
+            border-bottom: 1px solid var(--bs-border-color)
+        }
+
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Sugar Watch</a>
+    
 
-            <!-- Toggler -->
-            <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <!-- Header / Navbar Glass -->
+    <nav class="navbar navbar-expand-lg sticky-top navbar-glass border-bottom">
+        <div class="container px-3">
 
-            <!-- Collapsible -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left -->
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-watch"></i>
+                <span class="fw-bold">Sugar Watch</span>
+            </a>
+
+
+            <!-- Right: icons (mobile) -->
+            <div class="d-lg-none d-flex align-items-center gap-2 order-lg-2">
+                <button class="btn btn-icon" type="button" data-bs-toggle="collapse" data-bs-target="#navSearch" aria-controls="navSearch" aria-expanded="false" aria-label="Tìm kiếm">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a class="btn btn-icon position-relative" asp-controller="Cart" asp-action="Index" aria-label="Giỏ hàng">
+                    <i class="bi bi-bag"></i>
+                    @if ((ViewBag.CartCount ?? 0) > 0)
+                    {
+                        <span class="badge text-bg-primary cart-badge">@ViewBag.CartCount</span>
+                    }
+                </a>
+                <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+
+            <!-- Collapsible: main -->
+            <div class="collapse navbar-collapse order-lg-1" id="navbarMain">
+                <!-- Left links -->
+                <ul class="navbar-nav me-lg-3 mb-2 mb-lg-0 ms-lg-2">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="menuProducts" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sản phẩm
+                        </a>
+                        <ul class="dropdown-menu shadow" aria-labelledby="menuProducts">
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index">Tất cả sản phẩm</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-sort="newest">Hàng mới về</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-sort="best">Bán chạy</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Index" asp-route-sort="price-desc">Cao cấp</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
-                    </li>
-
-                    <li><a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">All Products</a></li>
-
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Giới thiệu</a></li>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="MyOrders" asp-action="Index">Đơn hàng của tôi</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="MyOrders" asp-action="Index">Đơn hàng của tôi</a></li>
                     }
                 </ul>
 
-                <!-- Right -->
-                <div class="d-flex align-items-center gap-2">
-                    <a class="btn btn-outline-dark position-relative" asp-area="" asp-controller="Cart" asp-action="Index">
-                        <i class="bi bi-cart-fill me-1"></i> Giỏ hàng
-                        @* Nếu bạn có đếm số lượng trong ViewBag.CartCount *@
-                        @if ((ViewBag.CartCount ?? 0) > 0)
-                        {
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
-                                @ViewBag.CartCount
-                                <span class="visually-hidden">items in cart</span>
-                            </span>
-                        }
-                    </a>
 
-                    @* Đăng nhập/Đăng ký / Hello, user *@
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </div>
+                <!-- Search (desktop) -->
+                <form method="get" asp-controller="Products" asp-action="Index" class="d-none d-lg-flex ms-auto me-3 nav-search" role="search">
+                    <label for="qHeader" class="visually-hidden">Tìm kiếm</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
+                        <input id="qHeader" name="q" class="form-control border-start-0" type="search" placeholder="Tìm đồng hồ…" aria-label="Tìm đồng hồ" />
+                    </div>
+                </form>
+
+
     </nav>
+    
 
     <!-- Body -->
     <main role="main">

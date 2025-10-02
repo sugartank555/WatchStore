@@ -1,12 +1,217 @@
 ﻿@{
     ViewData["Title"] = "Giới thiệu";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Chào mừng bạn đến với cửa hàng đồng hồ của chúng tôi! Tại đây, chúng tôi chuyên cung cấp các mẫu đồng hồ chính hãng, chất lượng cao, phù hợp với nhiều phong cách và nhu cầu khác nhau.</p>
+<style>
+    :root {
+        --bg-1: #0b1020;
+        --bg-2: #111827;
+        --muted: #6b7280
+    }
 
-<p>Với niềm đam mê dành cho thời gian và sự tinh tế, chúng tôi cam kết mang đến cho khách hàng những sản phẩm đồng hồ từ các thương hiệu uy tín trong và ngoài nước. Mỗi chiếc đồng hồ không chỉ là công cụ xem giờ, mà còn là biểu tượng của phong cách sống và đẳng cấp cá nhân.</p>
+    .about-hero {
+        border-radius: 20px;
+        background: radial-gradient(1200px 400px at 10% -10%, rgba(59,130,246,.35), transparent), radial-gradient(800px 300px at 90% 120%, rgba(147,51,234,.35), transparent), linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        color: #e5e7eb;
+        padding: clamp(28px,5vw,56px);
+        position: relative;
+        overflow: hidden
+    }
 
-<p>Chúng tôi luôn đặt lợi ích và sự hài lòng của khách hàng lên hàng đầu, từ khâu tư vấn, lựa chọn sản phẩm cho đến chính sách bảo hành và hậu mãi.</p>
+        .about-hero h1 {
+            font-weight: 800
+        }
 
-<p>Cảm ơn bạn đã tin tưởng và đồng hành cùng chúng tôi!</p>
+        .about-hero .lead {
+            color: #cbd5e1
+        }
+
+    .stat {
+        display: flex;
+        gap: 12px;
+        align-items: center
+    }
+
+        .stat .num {
+            font-weight: 800;
+            font-size: clamp(28px,4vw,40px)
+        }
+
+    .value-card {
+        height: 100%;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+        background: #fff
+    }
+    
+</style>
+
+<div class="container py-4">
+
+    <!-- HERO -->
+    <section class="about-hero mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="badge bg-primary-subtle text-primary mb-2">Từ 2018 đến nay</span>
+                <h1 class="display-5 mb-2">Câu chuyện về Sugar Watch</h1>
+                <p class="lead mb-3">Nơi thời gian gặp gỡ sự tinh tế. Chúng tôi chọn lọc những chiếc đồng hồ chính hãng, bền bỉ và chuẩn gu—để bạn tự tin mỗi khi nhìn xuống cổ tay.</p>
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="stat"><i class="bi bi-award fs-4"></i><div><div class="num">500+</div><div class="text-secondary">Mẫu đang bán</div></div></div>
+                    <div class="stat"><i class="bi bi-people fs-4"></i><div><div class="num">10k+</div><div class="text-secondary">Khách hàng tin chọn</div></div></div>
+                    <div class="stat"><i class="bi bi-shield-check fs-4"></i><div><div class="num">24 tháng</div><div class="text-secondary">Bảo hành tiêu chuẩn</div></div></div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-end">
+                <img src="~/images/about-hero.jpg" class="img-fluid rounded-4 border" alt="Sugar Watch showroom" loading="lazy" onerror="this.src='/images/hero-watch.jpg'" />
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR VALUES -->
+    <section class="mb-4">
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="value-card h-100">
+                    <div class="d-flex align-items-center mb-2"><i class="bi bi-gem fs-4 me-2"></i><h5 class="mb-0">Chính hãng & Minh bạch</h5></div>
+                    <p class="text-secondary mb-0">100% sản phẩm có hoá đơn, tem phiếu bảo hành; nguồn gốc rõ ràng và thông tin kỹ thuật đầy đủ.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="value-card h-100">
+                    <div class="d-flex align-items-center mb-2"><i class="bi bi-lightning fs-4 me-2"></i><h5 class="mb-0">Trải nghiệm nhanh & mượt</h5></div>
+                    <p class="text-secondary mb-0">Giao diện tối giản, tìm kiếm tức thì, thanh toán linh hoạt—giúp bạn quyết định nhanh chóng.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="value-card h-100">
+                    <div class="d-flex align-items-center mb-2"><i class="bi bi-heart fs-4 me-2"></i><h5 class="mb-0">Dịch vụ tận tâm</h5></div>
+                    <p class="text-secondary mb-0">Tư vấn đúng nhu cầu, hỗ trợ sizing dây, hướng dẫn sử dụng và chăm sóc sau bán hàng.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STORY TIMELINE -->
+    <section class="mb-4 surface p-4 p-md-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <h3 class="fw-bold">Hành trình của chúng tôi</h3>
+                <p class="text-secondary">Từ một cửa hàng nhỏ dành cho những người mê đồng hồ cơ, Sugar Watch đã phát triển thành điểm đến của cộng đồng yêu thời gian trên khắp Việt Nam.</p>
+                <div class="d-flex flex-wrap mt-2">
+                    <a asp-controller="Products" asp-action="Index" class="brand-chip"><i class="bi bi-bookmark-star"></i> Bộ sưu tập</a>
+                    <a asp-controller="Home" asp-action="Contact" class="brand-chip"><i class="bi bi-chat-dots"></i> Liên hệ</a>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="timeline">
+                    <div class="t-item">
+                        <h6 class="mb-1">2018 — Khởi đầu</h6>
+                        <p class="text-secondary mb-0">Mở showroom đầu tiên và ra mắt website phiên bản 1.0.</p>
+                    </div>
+                    <div class="t-item">
+                        <h6 class="mb-1">2020 — Bứt tốc</h6>
+                        <p class="text-secondary mb-0">Mở rộng danh mục lên 150+ mẫu, tích hợp thanh toán online.</p>
+                    </div>
+                    <div class="t-item">
+                        <h6 class="mb-1">2023 — Cộng đồng</h6>
+                        <p class="text-secondary mb-0">Tổ chức meetup tháng, workshop chăm sóc & bảo dưỡng đồng hồ.</p>
+                    </div>
+                    <div class="t-item">
+                        <h6 class="mb-1">2025 — Nâng trải nghiệm</h6>
+                        <p class="text-secondary mb-0">Giao diện Sugar Watch mới với hiệu năng cao và chính sách hậu mãi rõ ràng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRANDS -->
+    <section class="mb-4">
+        <h4 class="fw-bold mb-2">Thương hiệu đồng hành</h4>
+        <p class="text-secondary">Chúng tôi chọn lọc từ các nhà sản xuất uy tín để đảm bảo chất lượng lẫn hậu mãi.</p>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="brand-chip">Seiko</span>
+            <span class="brand-chip">Citizen</span>
+            <span class="brand-chip">Orient</span>
+            <span class="brand-chip">Tissot</span>
+            <span class="brand-chip">Casio</span>
+            <span class="brand-chip">Fossil</span>
+        </div>
+    </section>
+
+    <!-- TEAM (optional visuals) -->
+    <section class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="team-card p-3">
+                    <img src="~/images/team-1.jpg" alt="Tư vấn viên Sugar Watch" class="w-100 rounded-3 mb-3" loading="lazy" onerror="this.src='/images/placeholder.png'" />
+                    <h6 class="mb-1">Đội ngũ tư vấn viên</h6>
+                    <p class="text-secondary mb-0">Hiểu sản phẩm, hiểu phong cách—để đưa ra lời khuyên phù hợp nhất cho cổ tay của bạn.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="team-card p-3">
+                    <img src="~/images/team-2.jpg" alt="Kỹ thuật viên bảo hành Sugar Watch" class="w-100 rounded-3 mb-3" loading="lazy" onerror="this.src='/images/placeholder.png'" />
+                    <h6 class="mb-1">Kỹ thuật & bảo hành</h6>
+                    <p class="text-secondary mb-0">Đội kỹ thuật viên được đào tạo bài bản, xử lý vệ sinh, căn chỉnh, thay pin, chống nước…</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUOTE + FAQ -->
+    <section class="row g-3 align-items-stretch mb-4">
+        <div class="col-lg-6">
+            <div class="surface h-100 p-4 p-md-5">
+                <h5 class="mb-3"><i class="bi bi-chat-quote"></i> Điều chúng tôi tin</h5>
+                <p class="quote"><i>“Một chiếc đồng hồ tốt không chỉ bền theo năm tháng, mà còn kể câu chuyện của người đeo.”</i></p>
+                <div class="mt-3 small text-secondary">— Sugar Watch Team</div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="h-100 p-4 p-md-5 border rounded-4">
+                <h5 class="mb-3"><i class="bi bi-question-circle"></i> Câu hỏi thường gặp</h5>
+                <div class="accordion" id="faq">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1h">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">Bảo hành như thế nào?</button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faq">
+                            <div class="accordion-body">Bảo hành 24 tháng tuỳ theo hãng, kèm hỗ trợ kỹ thuật trọn đời tại cửa hàng.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2h">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">Đổi trả ra sao?</button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faq">
+                            <div class="accordion-body">Đổi trả trong 7 ngày nếu sản phẩm chưa sử dụng và còn nguyên tem/phiếu.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3h">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">Có hỗ trợ đo cổ tay?</button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faq">
+                            <div class="accordion-body">Có—chúng tôi tư vấn kích thước mặt, độ dày, và thay dây phù hợp.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA CONTACT -->
+    <section class="mb-4">
+        <div class="p-4 p-md-5 border rounded-4 cta-panel text-center">
+            <h4 class="mb-2">Ghé thăm Sugar Watch</h4>
+            <p class="text-secondary mb-3">Trải nghiệm thực tế, thử lên tay và nhận tư vấn từ đội ngũ của chúng tôi.</p>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                <a class="btn btn-primary btn-lg" asp-controller="Home" asp-action="Contact"><i class="bi bi-geo-alt"></i> Xem địa chỉ</a>
+                <a class="btn btn-outline-dark btn-lg" asp-controller="Products" asp-action="Index"><i class="bi bi-compass"></i> Khám phá sản phẩm</a>
+            </div>
+        </div>
+    </section>
+
+</div>
